@@ -1,4 +1,4 @@
-SHELL := /usr/bin/env bash
+xpc_helper.oSHELL := /usr/bin/env bash
 SRC = $(shell pwd)/src
 CC = xcrun -sdk iphoneos clang
 STRIP = strip
@@ -34,7 +34,7 @@ ramdisk.dmg: jbinit jbloader jb.dylib
 ifeq ($(ASAN),1)
 	cp $(shell xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/*//lib/darwin/libclang_rt.{asan,ubsan}_ios_dynamic.dylib ramdisk/jbin
 endif
-	sudo gchown -R 0:0 ramdisk
+	sudo chown -R 0:0 ramdisk
 ifeq ($(ASAN),1)
 	hdiutil create -size 8M -layout NONE -format UDRW -uid 0 -gid 0 -srcfolder ./ramdisk -fs HFS+ -volname palera1nrd ./ramdisk.dmg
 else

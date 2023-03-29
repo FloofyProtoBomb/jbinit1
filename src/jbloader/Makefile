@@ -7,13 +7,23 @@ OBJECTS += get_set_flags.o launchctl/xpc_helper.o launchctl/bootstrap.o
 OBJECTS += launchctl/load.o get_dyld_platform.o
 
 CFLAGS  += -miphoneos-version-min=7.0 -arch arm64 -Os -I.
-LDFLAGS += $(SRC)/APFS.tbd -framework IOKit -framework CoreFoundation -framework Foundation -lobjc
-
+#LDFLAGS += $(SRC)/APFS.tbd -framework IOKit -framework CoreFoundation -framework Foundation -lobjc
+LDFLAGS += ${THEOS}/sdks/iPhoneOS14.5.sdk/System/Library/PrivateFrameworks/APFS.framework/APFS.tbd -framework IOKit -framework CoreFoundation -framework Foundation -lobjc
 ifeq ($(ASAN),1)
 CFLAGS += -fsanitize=address,undefined
 endif
 
-all: jbloader
+CFLAGS += -Iiphoneos_headers -Ilocal_include -DLOCAL_BUILD -Wno-availability
+
+all: local_init jbloader
+
+local_init:
+	$(RM) -r iphoneos_headers
+	mkdir iphoneos_headers
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/System/Library/Frameworks/IOKit.framework/Headers iphoneos_headers/IOKit
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/libkern iphoneos_headers
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/xpc iphoneos_headers
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/launch.h iphoneos_headers
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $<

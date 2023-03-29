@@ -22,3 +22,4 @@ palera1n.ipa
 *.dSYM
 *.dSYM.*
 .irecovery
+src/jbloader/iphoneos_headers/

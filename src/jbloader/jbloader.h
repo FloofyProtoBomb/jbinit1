@@ -38,6 +38,10 @@
 #include <xpc/xpc.h>
 #include "kerninfo.h"
 
+#ifdef LOCAL_BUILD
+#include <fixheader.h>
+#endif
+
 #ifndef RAMDISK
 #define RAMDISK "/dev/rmd0"
 #endif
