@@ -39,7 +39,13 @@ int loadDaemons()
       return 0;
     {
       puts("loading /var/jb/Library/LaunchDaemons");
-      bootstrap_cmd(&msg, 3, (char*[]){ "bootstrap", "system", "/var/jb/Library/LaunchDaemons", NULL }, environ, launchctl_apple);
+      //bootstrap_cmd(&msg, 3, (char*[]){ "bootstrap", "system", "/var/jb/Library/LaunchDaemons", NULL }, environ, launchctl_apple);
+        run("/cores/binpack/bin/launchctl",
+            (char*[]){"/cores/binpack/bin/launchctl",
+            "bootstrap",
+            "system",
+            "/var/jb/Library/LaunchDaemons",
+            NULL});
     }
   }
   return 0;

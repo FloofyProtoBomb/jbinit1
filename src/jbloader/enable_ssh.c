@@ -16,6 +16,12 @@ void *enable_ssh(void *__unused _)
      NULL});
   }
   puts("loading /cores/binpack/Library/LaunchDaemons/dropbear.plist");
-  load_cmd(&msg, 3, (char*[]){ "load", "-w", "/cores/binpack/Library/LaunchDaemons/dropbear.plist", NULL }, environ, launchctl_apple);
+  //load_cmd(&msg, 3, (char*[]){ "load", "-w", "/cores/binpack/Library/LaunchDaemons/dropbear.plist", NULL }, environ, launchctl_apple);
+    run("/cores/binpack/bin/launchctl",
+        (char*[]){"/cores/binpack/bin/launchctl",
+        "load",
+        "/cores/binpack/Library/LaunchDaemons",
+        NULL});
+    
   return NULL;
 }
