@@ -16,12 +16,29 @@ void *enable_ssh(void *__unused _)
      NULL});
   }
   puts("loading /cores/binpack/Library/LaunchDaemons/dropbear.plist");
-  //load_cmd(&msg, 3, (char*[]){ "load", "-w", "/cores/binpack/Library/LaunchDaemons/dropbear.plist", NULL }, environ, launchctl_apple);
-    run("/cores/binpack/bin/launchctl",
-        (char*[]){"/cores/binpack/bin/launchctl",
+//    run("/cores/binpack/bin/launchctl",
+//        (char*[]){"/cores/binpack/bin/launchctl",
+//        "load",
+//        "/cores/binpack/Library/LaunchDaemons",
+//        NULL});
+  /* WTF */
+  int ret;
+  if (checkrain_option_enabled(jbloader_flags, jbloader_userspace_rebooted)) {
+    ret = load_cmd(&msg, 4, (char*[]){ 
+      "load",
+      "-w",
+      "/cores/binpack/Library/LaunchDaemons/dropbear.plist",
+      "/cores/binpack/Library/LaunchDaemons/dropbear.plist", 
+      NULL
+    }, environ, launchctl_apple);
+  } else {
+    ret = load_cmd(&msg, 3, (char*[]){ 
         "load",
-        "/cores/binpack/Library/LaunchDaemons",
-        NULL});
-    
+        "-w",
+        "/cores/binpack/Library/LaunchDaemons/dropbear.plist",
+        NULL
+      }, environ, launchctl_apple);
+  }
+  printf("load_cmd returned %d\n", ret);
   return NULL;
 }
