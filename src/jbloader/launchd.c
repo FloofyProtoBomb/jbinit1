@@ -12,7 +12,12 @@ int check_and_mount_dmg()
     fprintf(stderr, "/cores/binpack cannot be accessed! errno=%d\n", errno);
     return -1;
   }
+#ifndef CORELLIUM
   return mount_dmg("ramfile://checkra1n", "hfs", "/cores/binpack", MNT_RDONLY, true);
+#else
+  // no overlay
+  return mount_dmg("/cores/overlay.dmg", "hfs", "/cores/binpack", MNT_RDONLY, true);
+#endif
 }
 
 int check_and_mount_loader()

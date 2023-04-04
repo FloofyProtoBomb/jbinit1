@@ -1,10 +1,18 @@
 #include <jbinit.h>
 #include <common.h>
 
-#ifdef ASAN
-#define CORES_SIZE 8388608
+#ifndef CORELLIUM
+# ifdef ASAN
+#  define CORES_SIZE 8388608
+# else
+#  define CORES_SIZE 2097152
+# endif
 #else
-#define CORES_SIZE 2097152
+# ifdef ASAN
+#  define CORES_SIZE (8388608 + 8388608)
+# else
+#  define CORES_SIZE (2097152 + 8388608)
+# endif
 #endif
 
 void mount_cores() {

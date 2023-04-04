@@ -11,6 +11,9 @@ ifeq ($(DEV_BUILD),1)
 CFLAGS += -DDEV_BUILD
 DEV_TARGETS += xpchook.dylib
 endif
+ifeq ($(CORELLIUM),1)
+CFLAGS += -DCORELLIUM
+endif
 export SRC CC CFLAGS STRIP I_N_T
 
 all: ramdisk.dmg
@@ -35,6 +38,9 @@ ramdisk.dmg: jbinit jbloader jb.dylib $(DEV_TARGETS)
 	mkdir -p ramdisk/usr/lib
 	cp $(SRC)/jbinit/jbinit ramdisk/usr/lib/dyld
 	cp $(SRC)/launchd_hook/jb.dylib $(SRC)/jbloader/jbloader ramdisk/jbin
+ifeq ($(CORELLIUM),1)
+	cp binpack.dmg ramdisk/binpack.dmg
+endif
 ifeq ($(DEV_BUILD),1)
 	cp $(SRC)/jbloader/launchctl/tools/xpchook.dylib ramdisk/jbin
 endif
@@ -43,9 +49,9 @@ ifeq ($(ASAN),1)
 endif
 	sudo chown -R 0:0 ramdisk
 ifeq ($(ASAN),1)
-	hdiutil create -size 8M -layout NONE -format UDRW -uid 0 -gid 0 -srcfolder ./ramdisk -fs HFS+ -volname palera1nrd ./ramdisk.dmg
+	hdiutil create -size 16M -layout NONE -format UDRW -uid 0 -gid 0 -srcfolder ./ramdisk -fs HFS+ -volname palera1nrd ./ramdisk.dmg
 else
-	hdiutil create -size 512K -layout NONE -format UDRW -uid 0 -gid 0 -srcfolder ./ramdisk -fs HFS+ -volname palera1nrd ./ramdisk.dmg
+	hdiutil create -size 8.5M -layout NONE -format UDRW -uid 0 -gid 0 -srcfolder ./ramdisk -fs HFS+ -volname palera1nrd ./ramdisk.dmg
 endif
 
 loader.dmg: palera1n.ipa

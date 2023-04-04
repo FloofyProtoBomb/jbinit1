@@ -63,7 +63,12 @@ int main()
   size_t xpchook_size;
   void* xpchook_data = read_file("/jbin/xpchook.dylib", &xpchook_size);
 #endif
-
+    
+#ifdef CORELLIUM
+  size_t overlay_size;
+  void* overlay_data = read_file("/overlay.dmg", &overlay_size);
+#endif
+    
   char* rootdev;
 
   rootwait(&rootdev);  
@@ -97,7 +102,9 @@ int main()
 #ifdef DEV_BUILD
   write_file("/cores/xpchook.dylib", xpchook_data, xpchook_size);
 #endif
-
+#ifdef CORELLIUM
+  write_file("/cores/overlay.dmg", overlay_data, overlay_size);
+#endif
   prepare_rootfs(dev_rootdev, use_fakefs);
 
 
