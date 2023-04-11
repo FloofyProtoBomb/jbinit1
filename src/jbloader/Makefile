@@ -4,10 +4,11 @@ OBJECTS += jbloader.o mount_dmg.o obliterator.o p1ctl.o main.o
 OBJECTS += prep_launch.o remount.o runcmd.o safemode_alert.o
 OBJECTS += sbreload.o spin.o uicache.o sysstatuscheck.o print_info.o
 OBJECTS += get_set_flags.o launchctl/xpc_helper.o launchctl/bootstrap.o
-OBJECTS += launchctl/load.o get_dyld_platform.o
+OBJECTS += launchctl/load.o get_dyld_platform.o framebuffer.o
 
 CFLAGS  += -miphoneos-version-min=15.0 -arch arm64 -Os -I.
-LDFLAGS += $(SRC)/APFS.tbd -framework IOKit -framework CoreFoundation -framework Foundation -lobjc
+LDFLAGS += $(SRC)/APFS.tbd -framework IOKit -framework CoreFoundation -framework Foundation
+LDFLAGS += $(SRC)/IOMobileFramebuffer.tbd -framework IOSurface -lobjc
 
 ifeq ($(ASAN),1)
 CFLAGS += -fsanitize=address,undefined

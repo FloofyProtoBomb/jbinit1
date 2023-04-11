@@ -1,0 +1,42 @@
+#ifndef IOMOBILEFRAMEBUFFER_IOMOBILEFRAMEBUFFER_H
+#define IOMOBILEFRAMEBUFFER_IOMOBILEFRAMEBUFFER_H
+#include <CoreGraphics/CoreGraphics.h>
+#include <IOKit/IOKitLib.h>
+#include <IOKit/IOTypes.h>
+
+__BEGIN_DECLS
+
+#define kIOMobileFramebufferError 0xE0000000
+
+typedef enum {
+    IOMobileFramebufferColorRemapModeNormal = 0,
+    IOMobileFramebufferColorRemapModeInverted = 1,
+    IOMobileFramebufferColorRemapModeGrayscale = 2,
+    IOMobileFramebufferColorRemapModeGrayscaleIncreaseContrast = 3,
+    IOMobileFramebufferColorRemapModeInvertedGrayscale = 4
+} IOMobileFramebufferColorRemapMode;
+
+typedef IOReturn IOMobileFramebufferReturn;
+typedef struct __IOMobileFramebuffer *IOMobileFramebufferConnection;
+typedef CGSize IOMobileFramebufferDisplaySize;
+typedef struct __IOSurface *IOSurfaceRef;
+
+IOMobileFramebufferReturn IOMobileFramebufferOpen(mach_port_t service, mach_port_t owningTask, unsigned int type, IOMobileFramebufferConnection *connection);
+IOMobileFramebufferReturn IOMobileFramebufferGetLayerDefaultSurface(IOMobileFramebufferConnection connection, int surface, IOSurfaceRef *buffer);
+IOMobileFramebufferReturn IOMobileFramebufferGetMainDisplay(IOMobileFramebufferConnection *connection);
+IOMobileFramebufferReturn IOMobileFramebufferSwapBegin(IOMobileFramebufferConnection connection, int *token);
+IOMobileFramebufferReturn IOMobileFramebufferSwapEnd(IOMobileFramebufferConnection connection);
+IOMobileFramebufferReturn IOMobileFramebufferSwapSetLayer(IOMobileFramebufferConnection connection, int layerid, IOSurfaceRef buffer);
+IOMobileFramebufferReturn IOMobileFramebufferSwapWait(IOMobileFramebufferConnection connection, int token, int something);
+IOMobileFramebufferReturn IOMobileFramebufferGetDisplayArea(IOMobileFramebufferConnection connection, CGFloat *displayArea);
+IOMobileFramebufferReturn IOMobileFramebufferGetDisplaySize(IOMobileFramebufferConnection connection, CGSize *size);
+IOMobileFramebufferReturn IOMobileFramebufferGetGammaTable(IOMobileFramebufferConnection connection, void *data);
+IOMobileFramebufferReturn IOMobileFramebufferSetGammaTable(IOMobileFramebufferConnection connection, void *data);
+IOMobileFramebufferReturn IOMobileFramebufferSetContrast(IOMobileFramebufferConnection connection, int level);
+IOMobileFramebufferReturn IOMobileFramebufferGetColorRemapMode(IOMobileFramebufferConnection connection, IOMobileFramebufferColorRemapMode *mode);
+IOMobileFramebufferReturn IOMobileFramebufferSetColorRemapMode(IOMobileFramebufferConnection connection, IOMobileFramebufferColorRemapMode mode);
+IOMobileFramebufferReturn IOMobileFramebufferSetWhiteOnBlackMode(IOMobileFramebufferConnection connection, bool enabled);
+IOMobileFramebufferReturn IOMobileFramebufferSetBrightnessCorrection(IOMobileFramebufferConnection connection, int level);
+
+__END_DECLS
+#endif

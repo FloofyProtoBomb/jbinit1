@@ -61,6 +61,7 @@ int jbloader_launchd(int argc, char **argv)
     "#  (c) palera1n develope r   \n"
     "#=============================\n"
   , stderr);
+  screen_init();
   if (getenv("XPC_USERSPACE_REBOOTED") == NULL) {
     int mount_ret = 0;
     fputs("mounting overlay\n", stderr);
