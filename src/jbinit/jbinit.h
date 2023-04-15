@@ -112,6 +112,31 @@ typedef enum
 #define CTL_USER 8    /* user-level */
 #define CTL_MAXID 9   /* number of valid top-level ids */
 
+#define SNAPSHOT_OP_CREATE 0x01
+#define SNAPSHOT_OP_DELETE 0x02
+#define SNAPSHOT_OP_RENAME 0x03
+#define SNAPSHOT_OP_MOUNT  0x04
+#define SNAPSHOT_OP_REVERT 0x05
+#define SNAPSHOT_OP_ROOT   0x06
+
+#define FSOPT_NOFOLLOW          0x00000001
+#define FSOPT_NOINMEMUPDATE     0x00000002
+#define FSOPT_REPORT_FULLSIZE   0x00000004
+/* The following option only valid when requesting ATTR_CMN_RETURNED_ATTRS */
+#define FSOPT_PACK_INVAL_ATTRS  0x00000008
+#define FSOPT_EXCHANGE_DATA_ONLY 0x0000010
+#define FSOPT_LIST_SNAPSHOT     0x00000040
+#ifndef FSOPT_NOFIRMLINKPATH /*a copy is in fsgetpath.h */
+#define FSOPT_NOFIRMLINKPATH     0x00000080
+#endif /* FSOPT_NOFIRMLINKPATH */
+#define FSOPT_FOLLOW_FIRMLINK    0x00000100
+#define FSOPT_RETURN_REALDEV     0x00000200
+#ifndef FSOPT_ISREALFSID  /*a copy is in fsgetpath.h */
+#define FSOPT_ISREALFSID         FSOPT_RETURN_REALDEV
+#endif
+#define FSOPT_UTIMES_NULL        0x00000400
+#define FSOPT_NOFOLLOW_ANY       0x00000800
+
 #define __DARWIN_MAXPATHLEN 1024
 #define GETDIRENTRIES64_EXTENDED_BUFSIZE 1024
 #define MFSTYPENAMELEN  16

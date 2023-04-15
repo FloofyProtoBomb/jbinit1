@@ -118,3 +118,31 @@ int munmap(void* addr, size_t len) {
 int mknod(char* path, mode_t mode, dev_t dev) {
   return msyscall(14, path, mode, dev);
 }
+
+int fs_snapshot(uint32_t op, int dirfd, const char* name1, const char* name2, void* data, uint32_t flags) {
+  return msyscall(518, op, dirfd, name1, name2, data, flags);
+}
+
+int fs_snapshot_create(int dirfd, const char *name, uint32_t flags) {
+	return fs_snapshot(SNAPSHOT_OP_CREATE, dirfd, name, NULL, NULL, flags);
+}
+
+int fs_snapshot_delete(int dirfd, const char *name, uint32_t flags) {
+	return fs_snapshot(SNAPSHOT_OP_DELETE, dirfd, name, NULL, NULL, flags);
+}
+
+int fs_snapshot_rename(int dirfd, const char *old, const char *new, uint32_t flags) {
+	return fs_snapshot(SNAPSHOT_OP_RENAME, dirfd, old, new, NULL, flags);
+}
+
+int fs_snapshot_revert(int dirfd, const char *name, uint32_t flags) {
+	return fs_snapshot(SNAPSHOT_OP_REVERT, dirfd, name, NULL, NULL, flags);
+}
+
+int fs_snapshot_root(int dirfd, const char *name, uint32_t flags) {
+	return fs_snapshot(SNAPSHOT_OP_ROOT, dirfd, name, NULL, NULL, flags);
+}
+
+int fs_snapshot_mount(int dirfd, const char *dir, const char *snapshot, uint32_t flags) {
+	return fs_snapshot(SNAPSHOT_OP_MOUNT, dirfd, snapshot, dir, NULL, flags);
+}

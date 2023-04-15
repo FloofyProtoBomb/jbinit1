@@ -15,7 +15,10 @@ void select_root(uint64_t* rootlivefs_p, int* rootopts_p, char** rootdev_p, char
     *rootdev_p = dev_rootdev;
     *rootlivefs_p = 1;
   }
-  if (checkrain_option_enabled(pinfo.flags, palerain_option_setup_rootful))
+  if (
+    checkrain_option_enabled(pinfo.flags, palerain_option_setup_rootful) ||
+    checkrain_option_enabled(pinfo.flags, palerain_option_no_ssv)
+  )
   {
     *rootlivefs_p = 1;
   }
