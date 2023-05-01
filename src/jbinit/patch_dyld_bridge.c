@@ -8,6 +8,7 @@
 #define symbol_to_patch "____ZNK5dyld39MachOFile24forEachSupportedPlatformEU13block_pointerFvNS_8PlatformEjjE_block_invoke"
 
 void *dyld_buf;
+void *orig_dyld_buf;
 size_t dyld_len;
 int platform = 0;
 
@@ -34,7 +35,7 @@ void patch_dyld() {
         LOG("detected corrupted dyld\n");
         spin();
     }
-    void *orig_dyld_buf = dyld_buf;
+    orig_dyld_buf = dyld_buf;
     if (magic == 0xbebafeca) {
         dyld_buf = macho_find_arch(dyld_buf, CPU_TYPE_ARM64);
         if (!dyld_buf) {
@@ -54,5 +55,6 @@ void patch_dyld() {
 void get_and_patch_dyld(void) {
     dyld_buf = read_file("/usr/lib/dyld", &dyld_len);
     patch_dyld();
-    write_file("/cores/dyld", dyld_buf, dyld_len);
+    write_file("/cores/dyld", orig_dyld_buf, dyld_len);
+    munmap(orig_dyld_buf, dyld_len);
 }
