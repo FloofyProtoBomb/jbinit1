@@ -4,13 +4,34 @@ OBJECTS  = main.o
 SUBDIRS = loader p1ctl utils helper
 
 CFLAGS  += -miphoneos-version-min=15.0 -arch arm64 -Os -I.
-LDFLAGS += $(SRC)/APFS.tbd -framework IOKit -framework CoreFoundation -framework Foundation -lobjc
+LDFLAGS += ${THEOS}/sdks/iPhoneOS14.5.sdk/System/Library/PrivateFrameworks/APFS.framework/APFS.tbd -framework IOKit -framework CoreFoundation -framework Foundation -lobjc
 
 ifeq ($(ASAN),1)
 CFLAGS += -fsanitize=address,undefined
 endif
 
-all: jbloader
+CFLAGS += -I$(shell pwd)/iphoneos_headers -I$(shell pwd)/local_include -DLOCAL_BUILD -Wno-availability
+
+all: local_init jbloader
+
+local_init:
+	$(RM) -r iphoneos_headers
+	mkdir iphoneos_headers
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/System/Library/Frameworks/IOKit.framework/Headers iphoneos_headers/IOKit
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/libkern iphoneos_headers
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/xpc iphoneos_headers
+	ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/launch.h iphoneos_headers
+	
+	cd launchctl && $(RM) -r iphoneos_headers
+	cd launchctl && mkdir iphoneos_headers
+	cd launchctl && ln -s $(shell xcrun -sdk macosx -show-sdk-path)/System/Library/Frameworks/IOKit.framework/Headers iphoneos_headers/IOKit
+	cd launchctl && ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/libkern iphoneos_headers
+	cd launchctl && ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/xpc iphoneos_headers
+	cd launchctl && ln -s $(shell xcrun -sdk macosx -show-sdk-path)/usr/include/launch.h iphoneos_headers
+	cd launchctl && xcrun -sdk iphoneos cc -Iiphoneos_headers --target=arm64-apple-ios15.0 -c xpc_helper.c -Wl,-sectcreate,__TEXT,__info_plist,Info.plist
+	cd launchctl && xcrun -sdk iphoneos cc -Iiphoneos_headers --target=arm64-apple-ios15.0 -c bootstrap.c -Wl,-sectcreate,__TEXT,__info_plist,Info.plist
+	cd launchctl && xcrun -sdk iphoneos cc -Iiphoneos_headers --target=arm64-apple-ios15.0 -c load.c -Wl,-sectcreate,__TEXT,__info_plist,Info.plist
+	cd launchctl && $(RM) -r iphoneos_headers
 
 $(SUBDIRS):
 	$(MAKE) -C $@ all
