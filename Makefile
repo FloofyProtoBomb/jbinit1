@@ -34,8 +34,11 @@ binpack.dmg: binpack.tar loader.dmg hook_all
 	sudo mkdir -p binpack/Applications
 	sudo mkdir -p binpack/usr/lib
 	sudo mkdir -p binpack/Library/LaunchDaemons
+	sudo mkdir -p binpack/Library/Frameworks/CydiaSubstrate.framework
+	sudo ln -s /cores/binpack/usr/lib/libellekit.dylib binpack/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate
 	sudo cp -a dropbear-plist/*.plist binpack/Library/LaunchDaemons
-	sudo cp src/systemhooks/rootlesshooks.dylib binpack/usr/lib
+	sudo cp -a src/rootlesshook/.theos/obj/rootlesshooks.dylib binpack/usr/lib
+	sudo cp -a libellekit.dylib binpack/usr/lib/libellekit.dylib
 	sudo cp loader.dmg binpack
 	sudo chown -R 0:0 binpack
 	hdiutil create -size 8m -layout NONE -format UDZO -imagekey zlib-level=9 -srcfolder ./binpack -volname palera1nfs -fs HFS+ ./binpack.dmg
@@ -82,11 +85,11 @@ clean:
 		src/jbloader/loader/create_fakefs_sh.c src/dyld_platform_test/dyld_platform_test loader.dmg \
 		src/systemhooks/rootlesshooks.dylib
 	sudo rm -rf ramdisk binpack cores
-	rm -rf src/systemhooks/ellekit/build src/systemhooks/rootlesshooks/.theos
+	rm -rf src/systemhooks/ellekit/build src/rootlesshook/.theos
 	find . -name '*.o' -delete
 	rm -f ramdisk.img4
 
 hook_all:
-	$(MAKE) -C src/systemhooks all
+	$(MAKE) -C src/rootlesshook
 
 .PHONY: all clean jbinit jbloader jb.dylib dyld_platform_test xpchook.dylib binpack.dmg hook_all
