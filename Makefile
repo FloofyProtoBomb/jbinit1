@@ -24,7 +24,7 @@ export SRC CC CFLAGS LDFLAGS STRIP I_N_T
 
 all: ramdisk.dmg
 
-binpack.dmg: binpack.tar loader.dmg hook_all
+binpack.dmg: binpack.tar loader.dmg hook_cfprefsd
 	sudo rm -rf ./binpack.dmg binpack
 	sudo tar --preserve-permissions -xf binpack.tar
 	sudo chown $${UID}:$${GID} .
@@ -37,7 +37,7 @@ binpack.dmg: binpack.tar loader.dmg hook_all
 	sudo mkdir -p binpack/Library/Frameworks/CydiaSubstrate.framework
 	sudo ln -s /cores/binpack/usr/lib/libellekit.dylib binpack/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate
 	sudo cp -a dropbear-plist/*.plist binpack/Library/LaunchDaemons
-	sudo cp -a src/rootlesshook/.theos/obj/rootlesshooks.dylib binpack/usr/lib
+	sudo cp -a src/rootlesshook/rootlesshooks.dylib binpack/usr/lib
 	sudo cp -a libellekit.dylib binpack/usr/lib/libellekit.dylib
 	sudo cp loader.dmg binpack
 	sudo chown -R 0:0 binpack
@@ -83,13 +83,22 @@ clean:
 	rm -f jb.dylib binpack.dmg src/launchctl/tools/xpchook.dylib src/systemhooks/libellekit.a ramdisk.dmg \
 		src/jbinit/jbinit src/jbloader/jbloader src/systemhooks/jb.dylib src/systemhooks/injector.dylib \
 		src/jbloader/loader/create_fakefs_sh.c src/dyld_platform_test/dyld_platform_test loader.dmg \
-		src/systemhooks/rootlesshooks.dylib
+		src/rootlesshook/rootlesshooks.dylib
 	sudo rm -rf ramdisk binpack cores
-	rm -rf src/systemhooks/ellekit/build src/rootlesshook/.theos
+	rm -rf src/systemhooks/ellekit/build
 	find . -name '*.o' -delete
 	rm -f ramdisk.img4
 
-hook_all:
+get_ellekit:
+	rm -f libellekit.dylib
+	rm -rf extract
+	curl -sLOOOO http://ellekit.space/pool/ellekit_0.5.3_iphoneos-arm64.deb
+	dpkg-deb -R ellekit_0.5.3_iphoneos-arm64.deb ./extract/
+	lipo -thin arm64 -output ./libellekit.dylib extract/var/jb/usr/lib/libellekit.dylib
+	rm -f ellekit_0.5.3_iphoneos-arm64.deb
+	rm -rf extract
+		
+hook_cfprefsd: get_ellekit
 	$(MAKE) -C src/rootlesshook
 
-.PHONY: all clean jbinit jbloader jb.dylib dyld_platform_test xpchook.dylib binpack.dmg hook_all
+.PHONY: all clean jbinit jbloader jb.dylib dyld_platform_test xpchook.dylib binpack.dmg get_ellekit hook_cfprefsd

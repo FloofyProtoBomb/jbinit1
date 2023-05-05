@@ -1,15 +1,13 @@
-TARGET := iphone:clang:16.2:15.0
-INSTALL_TARGET_PROCESSES = cfprefsd
-FINALPACKAGE = 1
-THEOS_PACKAGE_SCHEME = rootless
-ARCHS = arm64
 
-include $(THEOS)/makefiles/common.mk
+hook_FRAMEWORKS += -framework Foundation -framework CoreFoundation CydiaSubstrate.framework/CydiaSubstrate.tbd
+hook_LDFLAGS += -rpath /var/jb/Library/Frameworks
+hook_LDFLAGS += -rpath /var/jb/usr/lib
+hook_LDFLAGS += -rpath /cores/binpack/Library/Frameworks
+hook_LDFLAGS += -rpath /cores/binpack/usr/lib
 
-TWEAK_NAME = rootlesshooks
+all: cfprefsd.dylib
 
-rootlesshooks_FILES = cfprefsd.x
-rootlesshooks_CFLAGS = -fobjc-arc
-rootlesshooks_LDFLAGS = -rpath /cores/binpack/Library/Frameworks
-
-include $(THEOS_MAKE_PATH)/tweak.mk
+cfprefsd.dylib: cfprefsd.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(hook_LDFLAGS) $(hook_FRAMEWORKS) cfprefsd.c -miphoneos-version-min=15.0 -arch arm64 -Os -Wall -Wextra -Wno-unused-parameter -shared -o rootlesshooks.dylib
+	$(I_N_T) -id '/cores/binpack/usr/lib/rootlesshooks.dylib' rootlesshooks.dylib
+	ldid -S rootlesshooks.dylib
