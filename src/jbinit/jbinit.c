@@ -103,7 +103,7 @@ int main()
 #endif
 
   prepare_rootfs(dev_rootdev, use_fakefs);
-  //get_and_patch_dyld();
+  get_and_patch_dyld();
 
   LOG("Closing console, goodbye!");
 
