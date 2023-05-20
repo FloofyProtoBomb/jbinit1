@@ -53,4 +53,4 @@ jobs:
           forceUpload: true
           dryRun: false
           localDir: 'dist'
-          remoteDir: '/palera1n/c-rewrite/deps/'
+          remoteDir: '/palera1n/c-rewrite/deps/the_plush'
