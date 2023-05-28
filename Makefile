@@ -4,7 +4,7 @@ CC = xcrun -sdk iphoneos clang
 STRIP = strip
 INSTALL = install
 I_N_T = install_name_tool
-CFLAGS += -I$(SRC)/include
+CFLAGS += -I$(SRC)/include -arch arm64
 ifeq ($(ASAN),1)
 CFLAGS += -DASAN
 endif
