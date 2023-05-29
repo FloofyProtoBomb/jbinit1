@@ -51,4 +51,7 @@ jobs:
           mv ramdisk.dmg dist/ramdisk.dmg
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3
+        with:
+          name: ramdisk
+          path: dist/ramdisk.dmg
