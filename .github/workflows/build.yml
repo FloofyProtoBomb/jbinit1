@@ -51,13 +51,4 @@ jobs:
           mv ramdisk.dmg dist/ramdisk.dmg
 
       - name: Upload artifact
-        uses: wangyucode/sftp-upload-action@v1.4.8
-        with:
-          host: ${{ secrets.NICKCHAN_FTP_HOST }}
-          port: ${{ secrets.NICKCHAN_FTP_PORT }}
-          username: palera1n
-          privateKey: ${{ secrets.NICKCHAN_FTP_KEY }}
-          forceUpload: true
-          dryRun: false
-          localDir: 'dist'
-          remoteDir: '/palera1n/artifacts/jbinit_rootless'
+        uses: actions/upload-artifact@v3.1.2
